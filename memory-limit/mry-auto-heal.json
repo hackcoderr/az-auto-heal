@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites/config",
+      "name": "[concat('azure-cli-webapp-test0/', 'web')]", // Replace with your actual App Service  name
+      "apiVersion": "2020-12-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'Default1rs')]",  // Replace with your actual App Service Plan name
+        "autoHealEnabled": true,
+        "autoHealRules": [
+          {
+            "triggers": {
+              "privateBytesInKB": "[greaterOrEquals(variables('memoryThresholdKB'), 102401)]"
+            },
+            "actions": {
+              "actionType": "Recycle",
+              "minProcessExecutionTime": "PT5M"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "variables": {
+    "memoryThresholdKB": 102401
+  },
+  "outputs": {}
+}
