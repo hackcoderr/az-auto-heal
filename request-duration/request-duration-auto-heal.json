@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "variables": {
+    "siteName": "azure-cli-webapp-test01",  // provide your app service name
+    "appServicePlanName": "azure-cli-plan"  //change this app service plan with your service plan name
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2020-12-01",
+      "name": "[variables('siteName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "siteConfig": {
+          "autoHealEnabled": true,
+          "autoHealRules": [
+            {
+              "actions": {
+                "actionType": "CustomAction",
+                "customAction": {
+                  "exe": "powershell",
+                  "script": "Restart-AppService.ps1"
+                }
+              },
+              "triggers": {
+                "slowRequests": {
+                  "count": 5,
+                  "timeInterval": "PT5M",
+                  "timeTaken": "PT1M"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
