@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites/config",
+      "name": "[concat('azure-cli-webapp-test0', '/web')]", //replace azure-cli-webapp-test0 with your app service
+      "apiVersion": "2021-02-01",
+      "location": "West Europe", // Update with your region
+      "properties": {
+        "autoHealEnabled": true,
+        "autoHealRules": {
+          "triggers": {
+            "privateBytesInKB": 0,
+            "statusCodes": [
+              {
+                "status": 504,
+                "subStatus": 0,
+                "win32Status": 0
+              }
+            ]
+          },
+          "actions": {
+            "actionType": "Recycle",
+            "minProcessExecutionTimeInMinutes": 5
+          }
+        }
+      }
+    }
+  ]
+}
